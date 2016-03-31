@@ -19,5 +19,8 @@
   },
   "peerDependencies": {
     "hapi": "^13.2.2"
+  },
+  "dependencies": {
+    "mongojs": "^2.3.0"
   }
 }
