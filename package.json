@@ -15,12 +15,17 @@
     "plugin"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test lab --verbose --colors --debug --coverage"
   },
   "peerDependencies": {
     "hapi": "^13.2.2"
   },
   "dependencies": {
     "mongojs": "^2.3.0"
+  },
+  "devDependencies": {
+    "code": "^2.1.1",
+    "cross-env": "^1.0.7",
+    "lab": "^10.3.0"
   }
 }
