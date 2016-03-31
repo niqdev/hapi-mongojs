@@ -1,0 +1,24 @@
+{
+  "name": "hapi-mongojs",
+  "version": "0.1.0",
+  "description": "Hapi MongoDB plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niqdev/hapi-mongojs.git"
+  },
+  "keywords": [
+    "hapi.js",
+    "MongoDB",
+    "mongojs"
+  ],
+  "author": "niqdev",
+  "license": "CC-BY-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/niqdev/hapi-mongojs/issues"
+  },
+  "homepage": "https://github.com/niqdev/hapi-mongojs#readme"
+}
