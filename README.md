@@ -10,18 +10,18 @@ A tiny plugin to share a common MongoDB connection pool across the whole Hapi se
 
 'use strict';
 
+const Hapi = require('hapi');
+const mongojs = require('hapi-mongojs');
+const Boom = require('boom');
+
 const plugins = [
   {
-    register: require('hapi-mongojs'),
+    register: mongojs,
     options: {
       url: 'mongodb://localhost:27017/myDatabase'
     }
   }
 ];
-
-const Hapi = require('hapi');
-const mongojs = require('hapi-mongojs');
-const Boom = require('boom');
 
 const server = new Hapi.Server();
 
