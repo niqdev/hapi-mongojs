@@ -49,7 +49,7 @@ server.route({
     // EXECUTE QUERY
     myCollection.find((error, value) => {
       if (error) {
-        return reply(Boom.badData('Internal MongoDB error', error));
+        reject(Boom.badData('Internal MongoDB error', error));
       }
       reply(value);
     });
@@ -58,7 +58,6 @@ server.route({
 });
 
 server.register(plugins, (err) => {
-  // something bad happened loading the plugin
   if (err) {
     throw err;
   }
