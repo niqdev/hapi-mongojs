@@ -17,9 +17,11 @@ A tiny plugin to share a common MongoDB connection pool across the whole Hapi se
 'use strict';
 
 const Hapi = require('hapi');
-const mongojs = require('hapi-mongojs');
 const Boom = require('boom');
+// IMPORT DEPENDENCY
+const mongojs = require('hapi-mongojs');
 
+// ADD PLUGIN
 const plugins = [
   {
     register: mongojs,
@@ -41,8 +43,10 @@ server.route({
   path: '/',
   handler: function (request, reply) {
   
+    // GET DB CONNECTION
     const myCollection = mongojs.db().collection('myCollection');
     
+    // EXECUTE QUERY
     myCollection.find((error, value) => {
       if (error) {
         return reply(Boom.badData('Internal MongoDB error', error));
@@ -66,6 +70,5 @@ server.register(plugins, (err) => {
     server.log('info', `Server running at: ${server.info.uri}`);
   });
 });
-
 
 ```
