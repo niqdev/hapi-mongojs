@@ -47,7 +47,7 @@ server.route({
     // EXECUTE QUERY
     myCollection.find((error, value) => {
       if (error) {
-        reject(Boom.badData('Internal MongoDB error', error));
+        return reply(Boom.badData('Internal MongoDB error', error));
       }
       reply(value);
     });
