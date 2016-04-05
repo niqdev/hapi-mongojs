@@ -15,7 +15,8 @@
     "plugin"
   ],
   "scripts": {
-    "test": "cross-env NODE_ENV=test lab --verbose --colors --debug --coverage"
+    "test": "cross-env NODE_ENV=test lab --verbose --colors --debug --coverage",
+    "coverage": "istanbul cover ./node_modules/lab/bin/lab --report lcovonly -- -l && codecov"
   },
   "peerDependencies": {
     "hapi": "^13.2.2"
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "code": "^2.1.1",
+    "codecov": "^1.0.1",
     "cross-env": "^1.0.7",
     "lab": "^10.3.0",
     "proxyquire": "^1.7.4",
