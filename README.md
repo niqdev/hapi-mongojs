@@ -2,8 +2,6 @@
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
 
-> work in progress!
-
 A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs).
 
 ### Setup
@@ -70,7 +68,7 @@ server.register(plugins, (err) => {
 
 ```
 
-[npm-image]: https://img.shields.io/npm/v/hapi-mongojs.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/hapi-mongojs.svg
 [npm-url]: https://www.npmjs.com/package/hapi-mongojs
 [travis-image]: https://travis-ci.org/niqdev/hapi-mongojs.svg?branch=master
 [travis-url]: https://travis-ci.org/niqdev/hapi-mongojs
