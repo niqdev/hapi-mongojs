@@ -71,9 +71,6 @@ describe('test hapi-mongojs', () => {
     done();
   });
 
-
-
-
   it('register with indexes for two collection', (done) => {
     dbMock.runCommand = (command) => {
       expect(command).to.deep.equal({serverStatus: 1});
@@ -152,9 +149,6 @@ describe('test hapi-mongojs', () => {
 
   });
 
-
-
-
   it('register with two indexes for two collections, with an error', (done) => {
 
     dbMock.runCommand = (command) => {
@@ -222,10 +216,9 @@ describe('test hapi-mongojs', () => {
     const onNext = (err) => {
       expect(capturedCreateIndexArgs[0].keys.field1).to.equal(1);
       expect(capturedCreateIndexArgs[0].options.name).to.equal('index1_name');
-      expect(err).not.to.be.undefined();
+      expect(err).to.not.be.undefined();
       done();
     };
-
 
     const Server = {
       log: (params) => {
