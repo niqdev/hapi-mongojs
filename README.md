@@ -26,34 +26,30 @@ const plugins = [
     options: {
       url: 'mongodb://localhost:27017/myDatabase',
       // for ensure the collections indexes
-      indexes:  {
-         'collection1': [
-           {
-             keys: {
-               "aField": 1
-             },
-             'options': {
-               "v":1,
-               "unique": true,
-               "name": "index_name",
-               "ns": "database.collection1"
-             }
-           }
-         ],
-         'collection2': [
-           {
-             keys: {
-               "anotherFIeld": 1
-             },
-             'options': {
-               "v":1,
-               "unique": true,
-               "name": "index_name",
-               "ns": "database.collection2"
-             }
-           }
-         ]
-       };
+      indexes: {
+        'collection1': [{
+          keys: {
+            'aField': 1
+          },
+          'options': {
+            'v': 1,
+            'unique': true,
+            'name': 'index_name',
+            'ns': 'database.collection1'
+          }
+        }],
+          'collection2': [{
+          keys: {
+            'anotherFIeld': 1
+          },
+          'options': {
+            'v': 1,
+            'unique': true,
+            'name': 'index_name',
+            'ns': 'database.collection2'
+          }
+        }]
+      };
     }
   }
 ];
