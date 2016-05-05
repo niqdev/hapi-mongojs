@@ -3,6 +3,7 @@
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![codecov.io][codecov-image]][codecov-url]
 
 A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs).
+It ensures collections indexes from the options configuration.
 
 ### Setup
 `npm install --save hapi-mongojs`
@@ -22,7 +23,36 @@ const plugins = [
   {
     register: mongojs,
     options: {
-      url: 'mongodb://localhost:27017/myDatabase'
+      url: 'mongodb://localhost:27017/myDatabase',
+      // for ensure the collections indexes
+      indexes:  {
+         'collection1': [
+           {
+             keys: {
+               "aField": 1
+             },
+             'options': {
+               "v":1,
+               "unique": true,
+               "name": "index_name",
+               "ns": "database.collection1"
+             }
+           }
+         ],
+         'collection2': [
+           {
+             keys: {
+               "anotherFIeld": 1
+             },
+             'options': {
+               "v":1,
+               "unique": true,
+               "name": "index_name",
+               "ns": "database.collection2"
+             }
+           }
+         ]
+       };
     }
   }
 ];

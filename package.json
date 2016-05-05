@@ -15,20 +15,22 @@
     "plugin"
   ],
   "scripts": {
-    "test": "cross-env NODE_ENV=test lab --verbose --colors --debug --coverage",
-    "coverage": "istanbul cover ./node_modules/lab/bin/lab --report lcovonly -- -l && codecov"
+    "test": "cross-env NODE_ENV=test ./node_modules/mocha/bin/mocha --recursive test",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && codecov"
   },
   "peerDependencies": {
-    "hapi": "^13.2.2"
+    "hapi": "^13.3.0"
   },
   "dependencies": {
+    "es6-promisify": "^4.0.0",
     "mongojs": "^2.3.0"
   },
   "devDependencies": {
     "code": "^2.1.1",
     "codecov": "^1.0.1",
     "cross-env": "^1.0.7",
-    "lab": "^10.3.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
     "proxyquire": "^1.7.4",
     "sinon": "^1.17.3"
   }
