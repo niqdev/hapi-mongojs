@@ -71,4 +71,170 @@ describe('test hapi-mongojs', () => {
     done();
   });
 
+
+
+
+  it('register with indexes for two collection', (done) => {
+    dbMock.runCommand = (command) => {
+      expect(command).to.deep.equal({serverStatus: 1});
+    };
+
+    expect(MongoJsMock.db()).to.be.undefined();
+
+    const indexes = {
+      'collection1': [
+        {
+          keys: {
+            "field1": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index1_name",
+            "ns": "database.collection1"
+          }
+        },
+        {
+          keys: {
+            "field2": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index2_name",
+            "ns": "database.collection1"
+          }
+        }
+      ],
+      'collection2': [
+        {
+          keys: {
+            "field3": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index3_name",
+            "ns": "database.collection2"
+          }
+        }
+      ]
+    };
+
+    let capturedCreateIndexArgs = [];
+
+    const collectionMock = {
+      'createIndex': (keys, options, callback) => {
+        capturedCreateIndexArgs.push({keys:keys, options: options});
+        callback(null, 'response');
+      }
+    };
+
+    dbMock.collection = (collectionName) => {
+      return collectionMock;
+    };
+
+    const onNext = (err) => {
+      expect(capturedCreateIndexArgs[0].keys.field1).to.equal(1);
+      expect(capturedCreateIndexArgs[0].options.name).to.equal('index1_name');
+
+      expect(capturedCreateIndexArgs[1].keys.field2).to.equal(1);
+      expect(capturedCreateIndexArgs[1].options.name).to.equal('index2_name');
+
+      expect(capturedCreateIndexArgs[2].keys.field3).to.equal(1);
+      expect(capturedCreateIndexArgs[2].options.name).to.equal('index3_name');
+
+      expect(err).to.be.undefined();
+      done();
+    };
+
+    MongoJsMock.register({}, {url: URL, indexes: indexes}, onNext);
+
+  });
+
+
+
+
+  it('register with two indexes for two collections, with an error', (done) => {
+
+    dbMock.runCommand = (command) => {
+      expect(command).to.deep.equal({serverStatus: 1});
+    };
+
+    expect(MongoJsMock.db()).to.be.undefined();
+
+    const indexes = {
+      'collection1': [
+        {
+          keys: {
+            "field1": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index1_name",
+            "ns": "database.collection1"
+          }
+        },
+        {
+          'key': {
+            "field2": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index2_name",
+            "ns": "database.collection1"
+          }
+        }
+      ],
+      'collection2': [
+        {
+          keys: {
+            "field3": 1
+          },
+          'options': {
+            "v":1,
+            "unique": true,
+            "name": "index3_name",
+            "ns": "database.collection2"
+          }
+        }
+      ]
+    };
+
+    let capturedCreateIndexArgs = [];
+
+    const collectionMock = {
+      'createIndex': (keys, options, callback) => {
+        if (options.name === 'index2_name') {
+          throw new Error('error creating index index2_name');
+        }
+        capturedCreateIndexArgs.push({keys:keys, options: options});
+        callback(null, 'response');
+      }
+    };
+
+    dbMock.collection = (collectionName) => {
+      return collectionMock;
+    };
+
+    const onNext = (err) => {
+      expect(capturedCreateIndexArgs[0].keys.field1).to.equal(1);
+      expect(capturedCreateIndexArgs[0].options.name).to.equal('index1_name');
+      expect(err).not.to.be.undefined();
+      done();
+    };
+
+
+    const Server = {
+      log: (params) => {
+        expect(params).to.deep.equal(['hapi-mongojs', 'error']);
+      }
+    };
+
+    MongoJsMock.register(Server, {url: URL, indexes: indexes}, onNext);
+
+  });
+
 });
