@@ -1,14 +1,8 @@
 'use strict';
 
 const Code = require('code');
-const Lab = require('lab');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
-
-const lab = exports.lab = Lab.script();
-const describe = lab.describe;
-const it = lab.it;
-const before = lab.before;
 const expect = Code.expect;
 
 describe('test hapi-mongojs', () => {
@@ -16,8 +10,16 @@ describe('test hapi-mongojs', () => {
   const URL = 'MY_URL';
   let MongoJsMock;
   let dbMock;
+  let sandbox;
 
-  before((done) => {
+  afterEach((done) => {
+    // Restore all the things made through the sandbox
+    sandbox.restore();
+    done()
+  });
+
+  beforeEach((done) => {
+    sandbox = sinon.sandbox.create();
     dbMock = {};
     MongoJsMock = proxyquire('../lib/index', {
       'mongojs': (connectionString) => {
@@ -36,7 +38,7 @@ describe('test hapi-mongojs', () => {
 
     expect(MongoJsMock.db()).to.be.undefined();
 
-    const spyNext = sinon.spy();
+    const spyNext = sandbox.spy();
     MongoJsMock.register({}, {url: URL}, spyNext);
 
     expect(MongoJsMock.db()).to.equal(dbMock);
@@ -59,7 +61,7 @@ describe('test hapi-mongojs', () => {
         expect(params).to.deep.equal(['hapi-mongojs', 'error']);
       }
     };
-    const spyNext = sinon.spy();
+    const spyNext = sandbox.spy();
 
     MongoJsMock.register(Server, {url: URL}, spyNext);
 
