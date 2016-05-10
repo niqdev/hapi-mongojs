@@ -4,95 +4,26 @@
 
 A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs).
 
-It ensures collections indexes from the options configuration.
+You can ensure collection indexes.
 
 ### Setup
 `npm install --save hapi-mongojs`
 
 ### Example
 ```javascript
+TODO
+```
 
-'use strict';
+### Start MongoDB and run the example
+```bash
+cd example
+npm install
+npm start
 
-const Hapi = require('hapi');
-const Boom = require('boom');
-// IMPORT DEPENDENCY
-const mongojs = require('hapi-mongojs');
-
-// ADD PLUGIN
-const plugins = [
-  {
-    register: mongojs,
-    options: {
-      url: 'mongodb://localhost:27017/myDatabase',
-      // for ensure the collections indexes
-      indexes: {
-        'collection1': [{
-          keys: {
-            'aField': 1
-          },
-          'options': {
-            'v': 1,
-            'unique': true,
-            'name': 'index_name',
-            'ns': 'database.collection1'
-          }
-        }],
-          'collection2': [{
-          keys: {
-            'anotherFIeld': 1
-          },
-          'options': {
-            'v': 1,
-            'unique': true,
-            'name': 'index_name',
-            'ns': 'database.collection2'
-          }
-        }]
-      };
-    }
-  }
-];
-
-const server = new Hapi.Server();
-
-server.connection({
-  host: localhost,
-  port: 3000
-});
-
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: function (request, reply) {
-  
-    // GET DB CONNECTION
-    const myCollection = mongojs.db().collection('myCollection');
-    
-    // EXECUTE QUERY
-    myCollection.find((error, value) => {
-      if (error) {
-        return reply(Boom.badData('Internal MongoDB error', error));
-      }
-      reply(value);
-    });
-    
-  }
-});
-
-server.register(plugins, (err) => {
-  if (err) {
-    throw err;
-  }
-
-  server.start((err) => {
-    if (err) {
-      throw err;
-    }
-    server.log('info', `Server running at: ${server.info.uri}`);
-  });
-});
-
+# verify if server is running
+http://localhost:8888/status
+# example
+http://localhost:8888/example
 ```
 
 [npm-image]: https://img.shields.io/npm/v/hapi-mongojs.svg
