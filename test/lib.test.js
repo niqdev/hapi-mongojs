@@ -71,9 +71,26 @@ describe('test hapi-mongojs', () => {
     done();
   });
 
-  it('register with indexes for two collection', (done) => {
-    dbMock.runCommand = (command) => {
-      expect(command).to.deep.equal({serverStatus: 1});
+
+  it('register with indexes for two collection that exists', (done) => {
+
+
+    let collection1Mock = {};
+    let collection2Mock = {};
+    dbMock = {
+      runCommand: (command) => {
+        expect(command).to.deep.equal({serverStatus: 1});
+      },
+      getCollectionNames: (callBack) => {
+        callBack(null, ['collection1', 'collection2', 'collection3']);
+      },
+      createCollection: (collectionName, callback) => {
+        callback(null, 'OK');
+      },
+      collection: (collectionName) => {
+        if (collectionName === 'collection1') {return collection1Mock;
+        } else if (collectionName === 'collection2') {return collection2Mock;}
+      }
     };
 
     expect(MongoJsMock.db()).to.be.undefined();
@@ -85,7 +102,7 @@ describe('test hapi-mongojs', () => {
             "field1": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index1_name",
             "ns": "database.collection1"
@@ -96,7 +113,7 @@ describe('test hapi-mongojs', () => {
             "field2": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index2_name",
             "ns": "database.collection1"
@@ -109,7 +126,7 @@ describe('test hapi-mongojs', () => {
             "field3": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index3_name",
             "ns": "database.collection2"
@@ -118,28 +135,33 @@ describe('test hapi-mongojs', () => {
       ]
     };
 
-    let capturedCreateIndexArgs = [];
+    let capturedCreateIndex1Args = [];
+    let capturedCreateIndex2Args = [];
 
-    const collectionMock = {
+    collection1Mock = {
       'createIndex': (keys, options, callback) => {
-        capturedCreateIndexArgs.push({keys:keys, options: options});
+        capturedCreateIndex1Args.push({keys: keys, options: options});
         callback(null, 'response');
       }
     };
 
-    dbMock.collection = (collectionName) => {
-      return collectionMock;
+    collection2Mock = {
+      'createIndex': (keys, options, callback) => {
+        capturedCreateIndex2Args.push({keys: keys, options: options});
+        callback(null, 'response');
+      }
     };
 
+
     const onNext = (err) => {
-      expect(capturedCreateIndexArgs[0].keys.field1).to.equal(1);
-      expect(capturedCreateIndexArgs[0].options.name).to.equal('index1_name');
+      expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
+      expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
 
-      expect(capturedCreateIndexArgs[1].keys.field2).to.equal(1);
-      expect(capturedCreateIndexArgs[1].options.name).to.equal('index2_name');
+      expect(capturedCreateIndex1Args[1].keys.field2).to.equal(1);
+      expect(capturedCreateIndex1Args[1].options.name).to.equal('index2_name');
 
-      expect(capturedCreateIndexArgs[2].keys.field3).to.equal(1);
-      expect(capturedCreateIndexArgs[2].options.name).to.equal('index3_name');
+      expect(capturedCreateIndex2Args[0].keys.field3).to.equal(1);
+      expect(capturedCreateIndex2Args[0].options.name).to.equal('index3_name');
 
       expect(err).to.be.undefined();
       done();
@@ -149,10 +171,27 @@ describe('test hapi-mongojs', () => {
 
   });
 
-  it('register with two indexes for two collections, with an error', (done) => {
 
-    dbMock.runCommand = (command) => {
-      expect(command).to.deep.equal({serverStatus: 1});
+
+  it('register with indexes for two collection, one doesn\'t exists', (done) => {
+
+
+    let collection1Mock = {};
+    let collection2Mock = {};
+    dbMock = {
+      runCommand: (command) => {
+        expect(command).to.deep.equal({serverStatus: 1});
+      },
+      getCollectionNames: (callBack) => {
+        callBack(null, ['collection1']);
+      },
+      createCollection: (collectionName, callback) => {
+        callback(null, 'OK');
+      },
+      collection: (collectionName) => {
+        if (collectionName === 'collection1') {return collection1Mock;
+        } else if (collectionName === 'collection2') {return collection2Mock;}
+      }
     };
 
     expect(MongoJsMock.db()).to.be.undefined();
@@ -164,18 +203,18 @@ describe('test hapi-mongojs', () => {
             "field1": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index1_name",
             "ns": "database.collection1"
           }
         },
         {
-          'key': {
+          keys: {
             "field2": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index2_name",
             "ns": "database.collection1"
@@ -188,7 +227,7 @@ describe('test hapi-mongojs', () => {
             "field3": 1
           },
           'options': {
-            "v":1,
+            "v": 1,
             "unique": true,
             "name": "index3_name",
             "ns": "database.collection2"
@@ -197,26 +236,139 @@ describe('test hapi-mongojs', () => {
       ]
     };
 
-    let capturedCreateIndexArgs = [];
+    let capturedCreateIndex1Args = [];
+    let capturedCreateIndex2Args = [];
 
-    const collectionMock = {
+    collection1Mock = {
       'createIndex': (keys, options, callback) => {
-        if (options.name === 'index2_name') {
-          throw new Error('error creating index index2_name');
-        }
-        capturedCreateIndexArgs.push({keys:keys, options: options});
+        capturedCreateIndex1Args.push({keys: keys, options: options});
         callback(null, 'response');
       }
     };
 
-    dbMock.collection = (collectionName) => {
-      return collectionMock;
+    collection2Mock = {
+      'createIndex': (keys, options, callback) => {
+        capturedCreateIndex2Args.push({keys: keys, options: options});
+        callback(null, 'response');
+      }
     };
 
+
     const onNext = (err) => {
-      expect(capturedCreateIndexArgs[0].keys.field1).to.equal(1);
-      expect(capturedCreateIndexArgs[0].options.name).to.equal('index1_name');
-      expect(err).to.not.be.undefined();
+      expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
+      expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
+
+      expect(capturedCreateIndex1Args[1].keys.field2).to.equal(1);
+      expect(capturedCreateIndex1Args[1].options.name).to.equal('index2_name');
+
+      expect(capturedCreateIndex2Args[0].keys.field3).to.equal(1);
+      expect(capturedCreateIndex2Args[0].options.name).to.equal('index3_name');
+
+      expect(err).to.be.undefined();
+      done();
+    };
+
+    MongoJsMock.register({}, {url: URL, indexes: indexes}, onNext);
+
+  });
+
+
+
+
+
+
+  it('register with indexes for two collection, one doesn\'t exists, and one error from ensure index', (done) => {
+
+
+    let collection1Mock = {};
+    let collection2Mock = {};
+    dbMock = {
+      runCommand: (command) => {
+        expect(command).to.deep.equal({serverStatus: 1});
+      },
+      getCollectionNames: (callBack) => {
+        callBack(null, ['collection1']);
+      },
+      createCollection: (collectionName, callback) => {
+        callback(null, 'OK');
+      },
+      collection: (collectionName) => {
+        if (collectionName === 'collection1') {return collection1Mock;
+        } else if (collectionName === 'collection2') {return collection2Mock;}
+      }
+    };
+
+    expect(MongoJsMock.db()).to.be.undefined();
+
+    const indexes = {
+      'collection1': [
+        {
+          keys: {
+            "field1": 1
+          },
+          'options': {
+            "v": 1,
+            "unique": true,
+            "name": "index1_name",
+            "ns": "database.collection1"
+          }
+        },
+        {
+          keys: {
+            "field2": 1
+          },
+          'options': {
+            "v": 1,
+            "unique": true,
+            "name": "index2_name",
+            "ns": "database.collection1"
+          }
+        }
+      ],
+      'collection2': [
+        {
+          keys: {
+            "field3": 1
+          },
+          'options': {
+            "v": 1,
+            "unique": true,
+            "name": "index3_name",
+            "ns": "database.collection2"
+          }
+        }
+      ]
+    };
+
+    let capturedCreateIndex1Args = [];
+    let capturedCreateIndex2Args = [];
+
+    collection1Mock = {
+      'createIndex': (keys, options, callback) => {
+        capturedCreateIndex1Args.push({keys: keys, options: options});
+        callback(null, 'response');
+      }
+    };
+
+    collection2Mock = {
+      'createIndex': (keys, options, callback) => {
+        capturedCreateIndex2Args.push({keys: keys, options: options});
+        callback(new Error('error ensuring index2'));
+      }
+    };
+
+
+    const onNext = (err) => {
+      expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
+      expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
+
+      expect(capturedCreateIndex1Args[1].keys.field2).to.equal(1);
+      expect(capturedCreateIndex1Args[1].options.name).to.equal('index2_name');
+
+      expect(capturedCreateIndex2Args[0].keys.field3).to.equal(1);
+      expect(capturedCreateIndex2Args[0].options.name).to.equal('index3_name');
+
+      expect(err).not.to.be.undefined();
       done();
     };
 
@@ -231,3 +383,4 @@ describe('test hapi-mongojs', () => {
   });
 
 });
+
