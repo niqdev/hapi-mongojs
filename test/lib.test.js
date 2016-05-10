@@ -71,9 +71,7 @@ describe('test hapi-mongojs', () => {
     done();
   });
 
-
   it('register with indexes for two collection that exists', (done) => {
-
 
     let collection1Mock = {};
     let collection2Mock = {};
@@ -88,8 +86,11 @@ describe('test hapi-mongojs', () => {
         callback(null, 'OK');
       },
       collection: (collectionName) => {
-        if (collectionName === 'collection1') {return collection1Mock;
-        } else if (collectionName === 'collection2') {return collection2Mock;}
+        if (collectionName === 'collection1') {
+          return collection1Mock;
+        } else if (collectionName === 'collection2') {
+          return collection2Mock;
+        }
       }
     };
 
@@ -152,7 +153,6 @@ describe('test hapi-mongojs', () => {
       }
     };
 
-
     const onNext = (err) => {
       expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
       expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
@@ -170,12 +170,9 @@ describe('test hapi-mongojs', () => {
     MongoJsMock.register({}, {url: URL, indexes: indexes}, onNext);
 
   });
-
-
 
   it('register with indexes for two collection, one doesn\'t exists', (done) => {
 
-
     let collection1Mock = {};
     let collection2Mock = {};
     dbMock = {
@@ -189,8 +186,11 @@ describe('test hapi-mongojs', () => {
         callback(null, 'OK');
       },
       collection: (collectionName) => {
-        if (collectionName === 'collection1') {return collection1Mock;
-        } else if (collectionName === 'collection2') {return collection2Mock;}
+        if (collectionName === 'collection1') {
+          return collection1Mock;
+        } else if (collectionName === 'collection2') {
+          return collection2Mock;
+        }
       }
     };
 
@@ -253,7 +253,6 @@ describe('test hapi-mongojs', () => {
       }
     };
 
-
     const onNext = (err) => {
       expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
       expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
@@ -272,13 +271,7 @@ describe('test hapi-mongojs', () => {
 
   });
 
-
-
-
-
-
   it('register with indexes for two collection, one doesn\'t exists, and one error from ensure index', (done) => {
-
 
     let collection1Mock = {};
     let collection2Mock = {};
@@ -293,8 +286,11 @@ describe('test hapi-mongojs', () => {
         callback(null, 'OK');
       },
       collection: (collectionName) => {
-        if (collectionName === 'collection1') {return collection1Mock;
-        } else if (collectionName === 'collection2') {return collection2Mock;}
+        if (collectionName === 'collection1') {
+          return collection1Mock;
+        } else if (collectionName === 'collection2') {
+          return collection2Mock;
+        }
       }
     };
 
@@ -356,8 +352,7 @@ describe('test hapi-mongojs', () => {
         callback(new Error('error ensuring index2'));
       }
     };
-
-
+    
     const onNext = (err) => {
       expect(capturedCreateIndex1Args[0].keys.field1).to.equal(1);
       expect(capturedCreateIndex1Args[0].options.name).to.equal('index1_name');
