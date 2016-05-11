@@ -24,18 +24,30 @@ module.exports = {
       },
       {
         name: 'myCollection2',
-        // TODO array
-        indexes: [{
-          keys: {
-            'anotherField': 1
+        indexes: [
+          {
+            keys: {
+              'anotherField1': 1
+            },
+            options: {
+              'v': 1,
+              'unique': true,
+              'name': 'anotherfield1_idx',
+              'ns': 'database.myCollection2'
+            }
           },
-          options: {
-            'v': 1,
-            'unique': true,
-            'name': 'anotherfield_idx',
-            'ns': 'database.myCollection2'
+          {
+            keys: {
+              'anotherField2': 1
+            },
+            options: {
+              'v': 1,
+              'unique': true,
+              'name': 'anotherfield2_idx',
+              'ns': 'database.myCollection2'
+            }
           }
-        }]
+        ]
       }
     ]
   }

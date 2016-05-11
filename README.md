@@ -11,7 +11,80 @@ You can ensure collection indexes.
 
 ### Example
 ```javascript
-TODO
+
+const Hapi = require('hapi');
+const Boom = require('boom');
+// IMPORT NPM DEPENDENCY
+const mongojs = require('hapi-mongojs');
+
+// ADD PLUGINS CONFIG
+const plugins = [
+  {
+    register: mongojs,
+    options: {
+      url: 'mongodb://localhost:27017/myDatabase',
+      // ENSURE COLLECTION INDEXES (OPTIONAL)
+      collections: [{
+        name: 'myCollection1',
+        indexes: [{
+          keys: {
+            'aField': 1
+          },
+          options: {
+            'v': 1,
+            'unique': true,
+            'name': 'afield_idx',
+            'ns': 'database.myCollection1'
+          }
+        }]
+      }]
+    }
+  }
+];
+
+const server = new Hapi.Server();
+
+server.connection({
+  host: 'localhost',
+  port: 8888
+});
+
+server.route([
+  {
+    method: 'GET',
+    path: '/example',
+    handler: function (request, reply) {
+
+      // GET DB CONNECTION
+      const myCollection = mongojs.db().collection('myCollection1');
+
+      // EXECUTE QUERY
+      myCollection.find((error, value) => {
+        if (error) {
+          return reply(Boom.badData('Internal MongoDB error', error));
+        }
+        reply(value);
+      });
+
+    }
+  }
+]);
+
+server.register(plugins, (err) => {
+  if (err) {
+    console.error(err);
+    throw err;
+  }
+
+  server.start((err) => {
+    if (err) {
+      console.error(err);
+      throw err;
+    }
+    console.log('info', `Server running at: ${server.info.uri}`);
+  });
+});
+
 ```
 
 ### Start MongoDB and run the example
