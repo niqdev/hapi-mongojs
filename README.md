@@ -2,54 +2,54 @@
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![codecov.io][codecov-image]][codecov-url]
 
-A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs).
-
-It ensures collections indexes from the options configuration.
+A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs) and ensure collection indexes.
 
 ### Setup
 `npm install --save hapi-mongojs`
 
+### Run the [example](/example/server.js)
+```bash
+
+# remember to start MongoDB
+npm run example:install
+npm run example:start
+
+# verify if server is running
+http://localhost:8888/status
+# play with the example
+http://localhost:8888/example
+
+```
+
 ### Example
 ```javascript
 
-'use strict';
-
 const Hapi = require('hapi');
 const Boom = require('boom');
-// IMPORT DEPENDENCY
+// IMPORT NPM DEPENDENCY
 const mongojs = require('hapi-mongojs');
 
-// ADD PLUGIN
+// ADD PLUGINS CONFIG
 const plugins = [
   {
     register: mongojs,
     options: {
       url: 'mongodb://localhost:27017/myDatabase',
-      // for ensure the collections indexes
-      indexes: {
-        'collection1': [{
+      // ENSURE COLLECTION INDEXES (OPTIONAL)
+      collections: [{
+        name: 'myCollection1',
+        indexes: [{
           keys: {
             'aField': 1
           },
-          'options': {
+          options: {
             'v': 1,
             'unique': true,
-            'name': 'index_name',
-            'ns': 'database.collection1'
-          }
-        }],
-          'collection2': [{
-          keys: {
-            'anotherFIeld': 1
-          },
-          'options': {
-            'v': 1,
-            'unique': true,
-            'name': 'index_name',
-            'ns': 'database.collection2'
+            'name': 'afield_idx',
+            'ns': 'database.myCollection1'
           }
         }]
-      };
+      }]
     }
   }
 ];
@@ -57,39 +57,43 @@ const plugins = [
 const server = new Hapi.Server();
 
 server.connection({
-  host: localhost,
-  port: 3000
+  host: 'localhost',
+  port: 8888
 });
 
-server.route({
-  method: 'GET',
-  path: '/',
-  handler: function (request, reply) {
-  
-    // GET DB CONNECTION
-    const myCollection = mongojs.db().collection('myCollection');
-    
-    // EXECUTE QUERY
-    myCollection.find((error, value) => {
-      if (error) {
-        return reply(Boom.badData('Internal MongoDB error', error));
-      }
-      reply(value);
-    });
-    
+server.route([
+  {
+    method: 'GET',
+    path: '/example',
+    handler: function (request, reply) {
+
+      // GET DB CONNECTION
+      const myCollection = mongojs.db().collection('myCollection1');
+
+      // EXECUTE A QUERY
+      myCollection.find((error, value) => {
+        if (error) {
+          return reply(Boom.badData('Internal MongoDB error', error));
+        }
+        reply(value);
+      });
+
+    }
   }
-});
+]);
 
 server.register(plugins, (err) => {
   if (err) {
+    console.error(err);
     throw err;
   }
 
   server.start((err) => {
     if (err) {
+      console.error(err);
       throw err;
     }
-    server.log('info', `Server running at: ${server.info.uri}`);
+    console.log('info', `Server running at: ${server.info.uri}`);
   });
 });
 
