@@ -43,10 +43,8 @@ const plugins = [
             'aField': 1
           },
           options: {
-            'v': 1,
             'unique': true,
-            'name': 'afield_idx',
-            'ns': 'database.myCollection1'
+            'name': 'afield_idx'
           }
         }]
       }]
