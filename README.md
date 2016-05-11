@@ -16,7 +16,7 @@ npm run example:start
 
 # verify if server is running
 http://localhost:8888/status
-# play with the example
+# run the example
 http://localhost:8888/example
 
 ```
