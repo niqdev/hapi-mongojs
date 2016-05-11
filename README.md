@@ -2,15 +2,14 @@
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![codecov.io][codecov-image]][codecov-url]
 
-A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs).
-
-You can ensure collection indexes.
+A tiny plugin to share a common MongoDB connection pool across the whole Hapi server using [mongojs](https://github.com/mafintosh/mongojs) and ensure collection indexes.
 
 ### Setup
 `npm install --save hapi-mongojs`
 
 ### Run the [example](/example/server.js)
 ```bash
+
 # remember to start MongoDB
 npm run example:install
 npm run example:start
@@ -19,6 +18,7 @@ npm run example:start
 http://localhost:8888/status
 # play with the example
 http://localhost:8888/example
+
 ```
 
 ### Example
