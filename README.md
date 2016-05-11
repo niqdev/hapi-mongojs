@@ -9,6 +9,18 @@ You can ensure collection indexes.
 ### Setup
 `npm install --save hapi-mongojs`
 
+### Run the [example](/example/server.js)
+```bash
+# remember to start MongoDB
+npm run example:install
+npm run example:start
+
+# verify if server is running
+http://localhost:8888/status
+# play with the example
+http://localhost:8888/example
+```
+
 ### Example
 ```javascript
 
@@ -58,7 +70,7 @@ server.route([
       // GET DB CONNECTION
       const myCollection = mongojs.db().collection('myCollection1');
 
-      // EXECUTE QUERY
+      // EXECUTE A QUERY
       myCollection.find((error, value) => {
         if (error) {
           return reply(Boom.badData('Internal MongoDB error', error));
@@ -85,17 +97,6 @@ server.register(plugins, (err) => {
   });
 });
 
-```
-
-### Start MongoDB and run the example
-```bash
-npm run example:install
-npm run example:start
-
-# verify if server is running
-http://localhost:8888/status
-# example
-http://localhost:8888/example
 ```
 
 [npm-image]: https://img.shields.io/npm/v/hapi-mongojs.svg
