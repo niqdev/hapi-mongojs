@@ -19,10 +19,9 @@
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && codecov"
   },
   "peerDependencies": {
-    "hapi": "^13.3.0"
+    "hapi": "^13.4.0"
   },
   "dependencies": {
-    "es6-promisify": "^4.0.0",
     "mongojs": "^2.4.0"
   },
   "devDependencies": {

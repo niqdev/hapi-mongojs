@@ -2,44 +2,13 @@
 
 const Hapi = require('hapi');
 const Boom = require('boom');
-// IMPORT DEPENDENCY
-const mongojs = require('hapi-mongojs');
+// IMPORT NPM DEPENDENCY
+//const mongojs = require('hapi-mongojs');
+const mongojs = require('../lib/index');
 
-
-// ADD PLUGIN
+// ADD PLUGINS CONFIG
 const plugins = [
-  {
-    register: require('hapi-mongojs'),
-    options: {
-      url: 'mongodb://localhost:27017/myDatabase'
-      // ,
-      // // ENSURE COLLECTION INDEXES
-      // indexes: {
-      //   'myCollection1': [{
-      //     keys: {
-      //       'aField': 1
-      //     },
-      //     'options': {
-      //       'v': 1,
-      //       'unique': true,
-      //       'name': 'afield_idx',
-      //       'ns': 'database.myCollection1'
-      //     }
-      //   }],
-      //   'myCollection2': [{
-      //     keys: {
-      //       'anotherField': 1
-      //     },
-      //     'options': {
-      //       'v': 1,
-      //       'unique': true,
-      //       'name': 'anotherfield_idx',
-      //       'ns': 'database.myCollection2'
-      //     }
-      //   }]
-      // }
-    }
-  }
+  require('./plugins/hapi-mongojs-config')
 ];
 
 const server = new Hapi.Server();
@@ -49,32 +18,33 @@ server.connection({
   port: 8888
 });
 
-server.route({
-  method: 'GET',
-  path: '/status',
-  handler: function (request, reply) {
-    reply('OK');
+server.route([
+  {
+    method: 'GET',
+    path: '/status',
+    handler: function (request, reply) {
+      reply('OK');
+    }
+  },
+  {
+    method: 'GET',
+    path: '/example',
+    handler: function (request, reply) {
+
+      // GET DB CONNECTION
+      const myCollection = mongojs.db().collection('myCollection1');
+
+      // EXECUTE QUERY
+      myCollection.find((error, value) => {
+        if (error) {
+          return reply(Boom.badData('Internal MongoDB error', error));
+        }
+        reply(value);
+      });
+
+    }
   }
-});
-
-server.route({
-  method: 'GET',
-  path: '/example',
-  handler: function (request, reply) {
-
-    // GET DB CONNECTION
-    const myCollection = mongojs.db().collection('myCollection1');
-
-    // EXECUTE QUERY
-    myCollection.find((error, value) => {
-      if (error) {
-        return reply(Boom.badData('Internal MongoDB error', error));
-      }
-      reply(value);
-    });
-
-  }
-});
+]);
 
 server.register(plugins, (err) => {
   if (err) {
@@ -93,8 +63,8 @@ server.register(plugins, (err) => {
   server.on('start', () => {
 
     // GET DB CONNECTION
-    const myCollection = mongojs.db().collection('myCollection1');
-    myCollection.save({ value: 'aaa' })
+    //const myCollection = mongojs.db().collection('myCollection1');
+    //myCollection.save({ value: 'aaa' })
 
   });
 });
