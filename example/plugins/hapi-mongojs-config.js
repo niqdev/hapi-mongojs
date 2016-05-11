@@ -24,6 +24,7 @@ module.exports = {
       },
       {
         name: 'myCollection2',
+        // TODO array
         indexes: [{
           keys: {
             'anotherField': 1
