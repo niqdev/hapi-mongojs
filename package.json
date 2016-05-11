@@ -16,7 +16,9 @@
   ],
   "scripts": {
     "test": "cross-env NODE_ENV=test ./node_modules/mocha/bin/mocha --recursive test",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && codecov"
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && codecov",
+    "example:install": "npm install && cd example && npm install",
+    "example:start": "cd example && npm start"
   },
   "peerDependencies": {
     "hapi": "^13.4.0"

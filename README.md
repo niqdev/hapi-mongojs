@@ -16,9 +16,8 @@ TODO
 
 ### Start MongoDB and run the example
 ```bash
-cd example
-npm install
-npm start
+npm run example:install
+npm run example:start
 
 # verify if server is running
 http://localhost:8888/status

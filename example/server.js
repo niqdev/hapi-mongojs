@@ -63,8 +63,12 @@ server.register(plugins, (err) => {
   server.on('start', () => {
 
     // GET DB CONNECTION
-    //const myCollection = mongojs.db().collection('myCollection1');
-    //myCollection.save({ value: 'aaa' })
+    const myCollection = mongojs.db().collection('myCollection1');
+
+    // EXECUTE QUERY
+    myCollection.save({ aField: 'value1' });
+    myCollection.save({ aField: 'value2' });
+    myCollection.save({ aField: 'value3' });
 
   });
 });
