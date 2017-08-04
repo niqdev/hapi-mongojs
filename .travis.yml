@@ -2,7 +2,7 @@ sudo: false
 
 language: node_js
 node_js:
-- 5
+- 8
 
 after_success:
   - npm run coverage
