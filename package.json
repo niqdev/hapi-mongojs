@@ -3,7 +3,7 @@
   "version": "3.0.1",
   "description": "Hapi MongoDB plugin",
   "author": "niqdev",
-  "license": "CC-BY-SA-4.0",
+  "license": "MIT",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
